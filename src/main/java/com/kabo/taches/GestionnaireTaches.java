@@ -7,6 +7,18 @@ public class GestionnaireTaches {
     private final List<Tache> taches = new ArrayList<>();
     private int prochainId = 1;
 
+    public GestionnaireTaches() {
+    }
+
+    // Démarre avec des tâches existantes (par exemple chargées depuis un fichier)
+    public GestionnaireTaches(List<Tache> tachesInitiales) {
+        for (Tache t : tachesInitiales) {
+            taches.add(t);
+            // La prochaine tâche doit avoir un numéro plus grand que tous ceux existants
+            prochainId = Math.max(prochainId, t.getId() + 1);
+        }
+    }
+
     public Tache ajouter(String titre) {
         Tache tache = new Tache(prochainId++, titre);
         taches.add(tache);

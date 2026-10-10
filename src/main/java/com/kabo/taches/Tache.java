@@ -6,9 +6,14 @@ public class Tache {
     private boolean terminee;
 
     public Tache(int id, String titre) {
+        this(id, titre, false);
+    }
+
+    // Utilisé au chargement pour recréer une tâche avec son état réel
+    public Tache(int id, String titre, boolean terminee) {
         this.id = id;
         this.titre = titre;
-        this.terminee = false;
+        this.terminee = terminee;
     }
 
     public int getId() {

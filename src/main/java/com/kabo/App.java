@@ -1,14 +1,18 @@
 package com.kabo;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Scanner;
 
 import com.kabo.taches.GestionnaireTaches;
+import com.kabo.taches.StockageTaches;
 import com.kabo.taches.Tache;
 
 public class App {
     public static void main(String[] args) {
-        GestionnaireTaches gestionnaire = new GestionnaireTaches();
+        StockageTaches stockage = new StockageTaches(Path.of("taches.txt"));
+        GestionnaireTaches gestionnaire = charger(stockage);
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== Gestionnaire de tâches ===");
@@ -27,6 +31,7 @@ public class App {
                     } else {
                         Tache tache = gestionnaire.ajouter(titre);
                         System.out.println("Tâche ajoutée : " + tache);
+                        sauvegarder(stockage, gestionnaire);
                     }
                 }
                 case "2" -> {
@@ -40,17 +45,23 @@ public class App {
                 case "3" -> {
                     Integer id = lireId(scanner);
                     if (id != null) {
-                        System.out.println(gestionnaire.terminer(id)
-                                ? "Tâche terminée."
-                                : "Tâche introuvable.");
+                        if (gestionnaire.terminer(id)) {
+                            System.out.println("Tâche terminée.");
+                            sauvegarder(stockage, gestionnaire);
+                        } else {
+                            System.out.println("Tâche introuvable.");
+                        }
                     }
                 }
                 case "4" -> {
                     Integer id = lireId(scanner);
                     if (id != null) {
-                        System.out.println(gestionnaire.supprimer(id)
-                                ? "Tâche supprimée."
-                                : "Tâche introuvable.");
+                        if (gestionnaire.supprimer(id)) {
+                            System.out.println("Tâche supprimée.");
+                            sauvegarder(stockage, gestionnaire);
+                        } else {
+                            System.out.println("Tâche introuvable.");
+                        }
                     }
                 }
                 case "0" -> continuer = false;
@@ -61,7 +72,23 @@ public class App {
         System.out.println("Au revoir !");
         scanner.close();
     }
-    
+
+    private static GestionnaireTaches charger(StockageTaches stockage) {
+        try {
+            return new GestionnaireTaches(stockage.charger());
+        } catch (IOException e) {
+            System.out.println("Impossible de charger les tâches : " + e.getMessage());
+            return new GestionnaireTaches();
+        }
+    }
+
+    private static void sauvegarder(StockageTaches stockage, GestionnaireTaches gestionnaire) {
+        try {
+            stockage.sauvegarder(gestionnaire.lister());
+        } catch (IOException e) {
+            System.out.println("Impossible de sauvegarder les tâches : " + e.getMessage());
+        }
+    }
 
     private static void afficherMenu() {
         System.out.println();

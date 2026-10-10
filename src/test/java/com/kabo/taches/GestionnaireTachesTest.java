@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +27,15 @@ class GestionnaireTachesTest {
         assertEquals(1, premiere.getId());
         assertEquals(2, deuxieme.getId());
         assertEquals(2, gestionnaire.lister().size());
+    }
+
+    @Test
+    void apresChargementLaNumerotationReprendApresLePlusGrandNumero() {
+        GestionnaireTaches charge = new GestionnaireTaches(List.of(
+                new Tache(3, "Faire les courses"),
+                new Tache(5, "Apprendre Java")));
+
+        assertEquals(6, charge.ajouter("Nouvelle tâche").getId());
     }
 
     @Test
